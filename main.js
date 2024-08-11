@@ -11,6 +11,7 @@ const clientsTable = document.getElementById('clients-table'),
   modalConfirmDelete = document.getElementById('modal-confirm-delete'),
   clientsTableData = document.querySelectorAll('table th'),
   contactsContainer = document.getElementById('contacts-container'),
+  contactInput = document.querySelectorAll('.contact-input'),
   modalContent = document.getElementById('modal-content'),
   modalHeader = document.getElementById('modal-header'),
   errorsContainer = document.getElementById('errors-container'),
@@ -51,32 +52,65 @@ async function serverAddClient(obj) {
 async function serverGetClients() {
   showPreloader(); // Показываем прелоадер
   try {
-    const response = await fetch(serverClientsUrl + '', {
-      method: 'GET'
-    });
-    const data = await response.json();
-    // hidePreloader(); // Скрываем прелоадер после получения ответа
+    const data = await serverRequest('', 'GET');
+    hidePreloader(); // Скрываем прелоадер после получения ответа
+
     return data;
   } catch (error) {
     console.error('Ошибка при получении списка клиентов:', error);
-    // hidePreloader(); // Убедитесь, что прелоадер скрывается даже при ошибке
+    hidePreloader(); // Убедитесь, что прелоадер скрывается даже при ошибке
   }
-  // return await serverRequest('', 'GET');
+
 }
-showPreloader();
+// showPreloader();
+
 // Функция для удаления клиента по ID
 async function serverDeleteClient(id) {
-  return await serverRequest(id, 'DELETE');
+
+  showPreloader(); // Показываем прелоадер
+  try {
+    const data = await serverRequest(id, 'DELETE');
+    hidePreloader(); // Скрываем прелоадер после получения ответа
+
+    return data;
+  } catch (error) {
+    console.error('Ошибка при удалении клиента:', error);
+    hidePreloader(); // Убедитесь, что прелоадер скрывается даже при ошибке
+  }
+
 }
 
 // Функция для редактирования клиента по ID
 async function serverEditClient(id, obj) {
-  return await serverRequest(id, 'PATCH', obj);
+
+  showPreloader(); // Показываем прелоадер
+  try {
+    const data = await serverRequest(id, 'PATCH', obj);
+    hidePreloader(); // Скрываем прелоадер после получения ответа
+
+    return data;
+  } catch (error) {
+    console.error('Ошибка при редактировании клиента:', error);
+    hidePreloader(); // Убедитесь, что прелоадер скрывается даже при ошибке
+  }
+
 }
+
 
 // Функция для получения данных клиента по ID
 async function serverGetClientById(clientId) {
-  return await serverRequest(clientId, 'GET');
+
+  showPreloader(); // Показываем прелоадер
+  try {
+    const data = await serverRequest(clientId, 'GET');
+    hidePreloader(); // Скрываем прелоадер после получения ответа
+
+    return data;
+  } catch (error) {
+    console.error('Ошибка при получении клиента по ID:', error);
+    hidePreloader(); // Убедитесь, что прелоадер скрывается даже при ошибке
+  }
+
 }
 
 // Функция для поиска клиентов на сервере
@@ -144,29 +178,6 @@ function getImage(src, alt = '', className = '') {
   return img;
 }
 
-// функция добавления контакта
-function getContacts(contacts) {
-  const visibleContacts = contacts.slice(0, 5).map(contact => createContactIcon(contact)).join(' ');
-  const hiddenContactsCount = contacts.length - 5;
-
-  const hiddenButton = hiddenContactsCount > 0 ? `
-        <button class="hidden-contacts-btn">
-            +${hiddenContactsCount}
-        </button>` : '';
-
-  const contactsHTML = `
-        <div class="contacts-wrapper d-flex justify-content-center">
-            <div class="visible-contacts">${visibleContacts}</div>
-            <div class="hidden-contacts d-none">${contacts.slice(5).map(contact => createContactIcon(contact)).join(' ')}</div>
-            ${hiddenButton}
-        </div>`;
-
-  const container = document.createElement('div');
-  container.innerHTML = contactsHTML;
-
-  return container.innerHTML;
-}
-
 // Функция создания иконки контакта
 function createContactIcon(contact) {
   let img;
@@ -212,6 +223,29 @@ clientsTable.addEventListener('click', (event) => {
     showHiddenContacts(event.target);
   }
 });
+
+// функция добавления контакта
+function getContacts(contacts) {
+  const visibleContacts = contacts.slice(0, 5).map(contact => createContactIcon(contact)).join(' ');
+  const hiddenContactsCount = contacts.length - 5;
+
+  const hiddenButton = hiddenContactsCount > 0 ? `
+        <button class="hidden-contacts-btn">
+            +${hiddenContactsCount}
+        </button>` : '';
+
+  const contactsHTML = `
+        <div class="contacts-wrapper d-flex justify-content-center">
+            <div class="visible-contacts">${visibleContacts}</div>
+            <div class="hidden-contacts d-none">${contacts.slice(5).map(contact => createContactIcon(contact)).join(' ')}</div>
+            ${hiddenButton}
+        </div>`;
+
+  const container = document.createElement('div');
+  container.innerHTML = contactsHTML;
+
+  return container.innerHTML;
+}
 
 // Создаёт поле ввода контакта
 function createContactInput(contact = {
@@ -259,7 +293,7 @@ function createContactInput(contact = {
   clearInputBtn.addEventListener('click', () => {
     valueInput.value = '';
     clearInputBtn.classList.add('d-none');
-    valueInput.focus();
+    contactDiv.remove(contactInput)
   });
 
   // Показываем кнопку очистки, если в поле уже есть данные
@@ -272,15 +306,19 @@ function createContactInput(contact = {
 
 // Функция добавления нового контакта в форму
 function addContact() {
+  const contactInputs = document.querySelectorAll('.contact-input');
+  if (contactInputs.length >= 10) {
+    addContactBtn.style.display = 'none'; // Скрыть кнопку, если контактов 10 или больше
+    return;
+  }
   const contactDiv = createContactInput();
   contactsContainer.appendChild(contactDiv);
+  addContactBtn.style.display = 'block'; // Показать кнопку, если контактов меньше 10
 }
-
-// Добавляем пустой контакт при загрузке страницы
-addContact();
 
 // обработчик события на кнопку "Добавить контакт"
 addContactBtn.addEventListener('click', addContact);
+
 
 // Валидация формы клиента
 function validateClientForm() {
@@ -304,8 +342,10 @@ function validateClientForm() {
     const contactValue = contactInput.querySelector('.contact-value').value.trim();
 
     if (!contactValue) {
+
       errors.push(`Значение контакта №${index + 1} (${contactType}) не может быть пустым.`);
     }
+
   });
 
   return errors;
@@ -329,6 +369,13 @@ function fillForm(client) {
     const contactInput = createContactInput(contact);
     contactsContainer.appendChild(contactInput);
   });
+
+  // Скрыть кнопку "Добавить контакт", если контактов 10 или больше
+  if (contacts.length >= 10) {
+    addContactBtn.style.display = 'none';
+  } else {
+    addContactBtn.style.display = 'block';
+  }
 }
 
 // Функция сохранения начального состояния формы
@@ -363,6 +410,8 @@ addBtn.addEventListener('click', () => {
   saveInitialFormState(); // Сохранение начального состояния формы
   buttonContainer.appendChild(cancelBtn);
 
+  addContactBtn.style.display = 'block'; // Показать кнопку "Добавить контакт" при открытии формы
+
   cancelBtn.addEventListener('click', () => cancelAction())
   // Добавление обработчика на кнопку закрытия формы
   ;
@@ -389,6 +438,16 @@ closeBtn.addEventListener('click', () => {
 async function addOrUpdateClient(event) {
   event.preventDefault();
 
+  // Проверка изменений в форме
+  if (!isFormChanged()) {
+    console.log('Изменений в форме нет. Данные не отправлены.');
+    modalContainer.classList.add('d-none');
+    addClientForm.reset();
+    contactsContainer.innerHTML = ''; // Очистка полей контактов
+    errorsContainer.innerHTML = ''; // Очистка сообщений об ошибках
+    return;
+  }
+
   const clientId = addBtn.dataset.editId; // Получаем ID клиента, если он редактируется
 
   const name = document.getElementById('name').value.trim();
@@ -398,11 +457,14 @@ async function addOrUpdateClient(event) {
   const contacts = Array.from(document.querySelectorAll('.contact-input')).map(contactInput => {
     const type = contactInput.querySelector('.contact-type').value;
     const value = contactInput.querySelector('.contact-value').value.trim();
+
     return {
       type,
       value
     };
+
   });
+  console.log(contacts);
 
   const errors = validateClientForm();
   if (errors.length > 0) {
@@ -430,7 +492,7 @@ async function addOrUpdateClient(event) {
     addClientForm.reset();
     contactsContainer.innerHTML = ''; // Очистка полей контактов
     clientsArr = await serverGetClients(); // Обновление массива клиентов
-    render(clientsArr);
+    render();
   } catch (error) {
     console.error('Ошибка при добавлении/редактировании клиента:', error);
   }

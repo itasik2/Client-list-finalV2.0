@@ -233,7 +233,7 @@ function createContactInput(contact = {
   clearInputBtn.addEventListener('click', () => {
     valueInput.value = '';
     clearInputBtn.classList.add('d-none');
-    valueInput.focus();
+    contactDiv.remove();
   });
 
   // Показываем кнопку очистки, если в поле уже есть данные

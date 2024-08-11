@@ -89,9 +89,11 @@ th {
   box-shadow: 0 0 35px 0 rgba(0, 0, 0, 0.15);
   background: var(--white);
   z-index: 99999;
-  height: max-content;
+  /* height: max-content; */
+  max-height: 100vh;
   padding-top: 30px;
   padding-bottom: 30px;
+  overflow: auto;
 }
 
 .modal-header-container {
@@ -351,16 +353,16 @@ th.sorted {
 
 }
 
-/* Добавьте эти стили в ваш CSS-файл */
+
 #preloader {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   z-index: 9999;
   width: 100%;
   height: 100%;
   overflow: visible;
-  background: #fff;
+  background: transparent;
 }
 
 .loader {
