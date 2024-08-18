@@ -18,6 +18,7 @@ const clientsTable = document.getElementById('clients-table'),
 
 let initialFormState = {};
 
+// Функция добавления прелоадера
 function togglePreloader(show) {
   document.getElementById('preloader').style.display = show ? 'block' : 'none';
 }
@@ -43,6 +44,7 @@ async function serverAddClient(obj) {
   return await serverRequest('', 'POST', obj);
 }
 
+//функция получения списка клиентов
 async function serverGetClients() {
   togglePreloader(true);
   try {
@@ -55,6 +57,7 @@ async function serverGetClients() {
   }
 }
 
+// Функция удаления клиента
 async function serverDeleteClient(id) {
   togglePreloader(true);
   try {
@@ -67,6 +70,7 @@ async function serverDeleteClient(id) {
   }
 }
 
+// Функция редактирования клиентов
 async function serverEditClient(id, obj) {
   togglePreloader(true);
   try {
@@ -79,6 +83,7 @@ async function serverEditClient(id, obj) {
   }
 }
 
+// Функия получения клиента по ID
 async function serverGetClientById(clientId) {
   togglePreloader(true);
   try {
@@ -91,9 +96,11 @@ async function serverGetClientById(clientId) {
   }
 }
 
+// Функция поиска клиента
 async function serverSearchClients(query) {
   return await serverRequest(`?search=${encodeURIComponent(query)}`, 'GET');
 }
+
 
 let column = 'fio',
   columnDir = true;
@@ -102,7 +109,7 @@ let column = 'fio',
 let clientsArr = await serverGetClients();
 
 // Функция создания кнопки
-function createButton(innerHTML, className, id) {
+function getBtn(innerHTML, className, id) {
   const btn = document.createElement('button');
   btn.innerHTML = innerHTML;
   btn.classList.add(className);
@@ -110,6 +117,7 @@ function createButton(innerHTML, className, id) {
   return btn;
 }
 
+// Функция сброса данных
 function resetModal() {
   modalContainer.classList.add('d-none');
   addClientForm.reset();
@@ -117,14 +125,18 @@ function resetModal() {
   modalConfirmDelete.innerHTML = '';
   contactsContainer.innerHTML = '';
   errorsContainer.innerHTML = '';
+
 }
 
-const cancelBtn = createButton('Отмена', 'cancel-btn', 'cancelBtn');
+// Кнопка отмены
+const cancelBtn = getBtn('Отмена', 'cancel-btn', 'cancelBtn');
 
+// Функция коканинации имени, фамилии, отчества
 function getFio(surname, name, lastname) {
   return `${surname} ${name} ${lastname}`;
 }
 
+// функция форматирования даты и времени
 function formatDateTime(date) {
   date = new Date(date);
   const day = String(date.getDate()).padStart(2, '0');
@@ -135,6 +147,7 @@ function formatDateTime(date) {
   return `${day}.${month}.${year} <span class="time light-text">${hours}:${minutes}</span>`;
 }
 
+// добавляет элемент изображения
 function getImage(src, alt = '', className = '') {
   const img = new Image();
   img.src = src;
@@ -143,6 +156,7 @@ function getImage(src, alt = '', className = '') {
   return img;
 }
 
+// создает иконку контакта
 function createContactIcon(contact) {
   const contactIcons = {
     'Телефон': 'img/phone-icon.svg',
@@ -156,21 +170,24 @@ function createContactIcon(contact) {
   return `<span id="tippy-contact" data-tippy-content='<div class="tooltip-content">${contact.type}: <a href="" target="_blank">${contact.value}</a></div>'>${img.outerHTML}</span>`;
 }
 
+// Показывает скрытые контакты
 function showHiddenContacts(button) {
   const contactsWrapper = button.closest('.contacts-wrapper');
   const hiddenContacts = contactsWrapper.querySelector('.hidden-contacts');
-  hiddenContacts.classList.toggle('d-none');
-  button.classList.toggle('d-none');
+  hiddenContacts.classList.replace('d-none', 'd-block');
+  button.classList.add('d-none');
   contactsWrapper.classList.toggle('flex-column');
   contactsWrapper.classList.toggle('align-items-start');
 }
 
+// Делегирование событий на таблицу клиентов
 clientsTable.addEventListener('click', (event) => {
   if (event.target.classList.contains('hidden-contacts-btn')) {
     showHiddenContacts(event.target);
   }
 });
 
+// Показавает первые 5 контактов
 function getContacts(contacts) {
   const visibleContacts = contacts.slice(0, 5).map(createContactIcon).join(' ');
   const hiddenContactsCount = contacts.length - 5;
@@ -183,6 +200,8 @@ function getContacts(contacts) {
     </div>`;
 }
 
+
+// Создает поле ввода контакта с его типом и значением
 function createContactInput(contact = {
   type: 'Телефон',
   value: ''
@@ -199,20 +218,21 @@ function createContactInput(contact = {
     </select>
     <div class="value-input-wrapper d-flex">
       <input type="text" class="contact-value" value="${contact.value}" placeholder="Введите значение">
-      <button type="button" class="clear-btn d-none">${getImage('./img/clear-icon.svg', '', 'clear-btn-icon').outerHTML}</button>
+      <button type="button" class="delete-input-btn d-none" data-tippy-content="Удалить">${getImage('./img/clear-icon.svg', '', 'clear-btn-icon').outerHTML}</button>
     </div>
   `;
 
   const valueInput = contactDiv.querySelector('.contact-value');
-  const clearInputBtn = contactDiv.querySelector('.clear-btn');
+  const deleteInputBtn = contactDiv.querySelector('.delete-input-btn');
 
+  // показывает кнопку удалить контакт при заполнении значения
   valueInput.addEventListener('input', () => {
-    clearInputBtn.classList.toggle('d-none', !valueInput.value.trim());
+    deleteInputBtn.classList.toggle('d-none', !valueInput.value.trim());
   });
 
-  clearInputBtn.addEventListener('click', () => {
+  deleteInputBtn.addEventListener('click', () => {
     valueInput.value = '';
-    clearInputBtn.classList.add('d-none');
+    deleteInputBtn.classList.add('d-none');
     contactsContainer.removeChild(contactDiv);
 
     // Показать кнопку "Добавить контакт", если контактов меньше 10
@@ -225,16 +245,23 @@ function createContactInput(contact = {
   });
 
   if (contact.value.trim()) {
-    clearInputBtn.classList.remove('d-none');
+    deleteInputBtn.classList.remove('d-none');
   }
+
+  // Инициализация Tippy.js для кнопки удаления
+  tippy(deleteInputBtn, {
+    content: 'Удалить',
+    allowHTML: true,
+    interactive: true,
+  });
 
   return contactDiv;
 }
 
 
-
+// Добалет форму заполнения контакта
 function addContact() {
-  if (contactsContainer.children.length >= 10) {
+  if (contactsContainer.children.length >= 10) { // Если число контактов равно или больше 10, то кнопка добавить контакт исчезает
     addContactBtn.style.display = 'none';
     return;
   }
@@ -244,6 +271,7 @@ function addContact() {
 
 addContactBtn.addEventListener('click', addContact);
 
+// Валидация
 function validateClientForm() {
   const errors = [];
   const nameInput = document.getElementById('name');
@@ -263,6 +291,7 @@ function validateClientForm() {
   return errors;
 }
 
+// Функция заполнения формы данными клиента
 function fillForm(client) {
   const {
     name,
@@ -305,19 +334,20 @@ function getFormState() {
   };
 }
 
+// Функция сохранения начального состояния формы
 function saveInitialFormState() {
   initialFormState = new FormData(addClientForm);
 }
 
 
-
+// Функция проверки изменений в форме
 function isFormChanged() {
   const currentFormState = getFormState();
   return JSON.stringify(currentFormState) !== JSON.stringify(initialFormState);
 }
 
 
-
+// Открытие модального окна для добавления клиента
 addBtn.addEventListener('click', () => {
   modalContainer.classList.remove('d-none');
   modalTitle.innerHTML = 'Новый клиент';
@@ -334,8 +364,10 @@ addBtn.addEventListener('click', () => {
   cancelBtn.addEventListener('click', resetModal);
 });
 
+// Закрытие модального окна
 closeBtn.addEventListener('click', resetModal);
 
+// добавляет или изменяет данные клиента
 async function addOrUpdateClient(event) {
   event.preventDefault();
 
@@ -385,11 +417,13 @@ async function addOrUpdateClient(event) {
   } catch (error) {
     console.error('Ошибка при добавлении/редактировании клиента:', error);
   }
+
 }
 
-
+// Сохранение клиента
 saveBtn.addEventListener('click', addOrUpdateClient);
 
+// Функция для подтверждения удаления клиента
 function confirmDeleteClient(clientId) {
   modalContainer.classList.remove('d-none');
   modalContent.classList.add('d-none');
@@ -417,6 +451,7 @@ function confirmDeleteClient(clientId) {
   document.getElementById('cancelBtn').addEventListener('click', resetModal);
 }
 
+// Функция для открытия модального окна с заполнением формы данными клиента
 async function openEditClientForm(clientId) {
   const client = await serverGetClientById(clientId);
   saveInitialFormState();
@@ -429,7 +464,7 @@ async function openEditClientForm(clientId) {
   addBtn.dataset.editId = client.id;
 
   buttonContainer.innerHTML = '';
-  const deleteClientBtn = createButton('Удалить клиента', 'delete-client-btn', `delete-client-${client.id}`);
+  const deleteClientBtn = getBtn('Удалить клиента', 'delete-client-btn', `delete-client-${client.id}`);
   deleteClientBtn.addEventListener('click', () => {
     confirmDeleteClient(client.id);
     modalContent.classList.add('d-none');
@@ -438,6 +473,8 @@ async function openEditClientForm(clientId) {
   buttonContainer.appendChild(deleteClientBtn);
 }
 
+
+// Сотрировка списка
 clientsTableData.forEach(elem => {
   elem.addEventListener('click', function () {
     if (this.dataset.column) {
@@ -448,6 +485,7 @@ clientsTableData.forEach(elem => {
   });
 });
 
+// Функция сортировки
 function getSortClients(prop, dir) {
   return clientsArr.sort((clientA, clientB) => {
     let propA = clientA[prop],
@@ -460,6 +498,7 @@ function getSortClients(prop, dir) {
   });
 }
 
+// Функция обновления иконок сортировки и указателей
 function updateSortIcons() {
   clientsTableData.forEach(th => {
     const icon = th.querySelector('.sort-icon');
@@ -478,20 +517,31 @@ function updateSortIcons() {
   });
 }
 
-searchInput.addEventListener('input', async (event) => {
-  const query = event.target.value.trim();
-  if (query) {
-    try {
-      clientsArr = await serverSearchClients(query);
-    } catch (error) {
-      console.error('Ошибка при поиске клиентов:', error);
+// Фильтрация
+let debounceTimer;
+
+searchInput.addEventListener('input', (event) => {
+  clearTimeout(debounceTimer); // Сбросить предыдущий таймер
+
+  debounceTimer = setTimeout(async () => {
+    const query = event.target.value.trim();
+
+    if (query) {
+      try {
+        clientsArr = await serverSearchClients(query);
+      } catch (error) {
+        console.error('Ошибка при поиске клиентов:', error);
+      }
+    } else {
+      clientsArr = await serverGetClients();
     }
-  } else {
-    clientsArr = await serverGetClients();
-  }
-  render();
+
+    render();
+  }, 300); // Устанавливаем задержку в 300 мс
 });
 
+
+// Функция отрисовки таблицы
 function render() {
   clientsTable.innerHTML = '';
   clientsArr = getSortClients(column, columnDir);
@@ -506,10 +556,10 @@ function render() {
       <td class="client-contacts">${getContacts(client.contacts)}</td>
     `;
 
-    const editBtn = createButton(`${getImage('./img/edit.svg', 'Изменить', 'edit-img').outerHTML} Изменить`, 'editBtn', `edit-${client.id}`);
+    const editBtn = getBtn(`${getImage('./img/edit.svg', 'Изменить', 'edit-img').outerHTML} Изменить`, 'editBtn', `edit-${client.id}`);
     editBtn.addEventListener('click', () => openEditClientForm(client.id));
 
-    const deleteBtn = createButton(`${getImage('./img/delete-icon.svg', 'Удалить', 'delete-img').outerHTML} Удалить`, 'deleteBtn', `delete-${client.id}`);
+    const deleteBtn = getBtn(`${getImage('./img/delete-icon.svg', 'Удалить', 'delete-img').outerHTML} Удалить`, 'deleteBtn', `delete-${client.id}`);
     deleteBtn.addEventListener('click', () => confirmDeleteClient(client.id));
 
     const btnTd = document.createElement('td');
@@ -530,6 +580,7 @@ function render() {
 
 render();
 
+// Обработчик события на кнопку "Закрыть" для модального окна подтверждения удаления
 modalContainer.addEventListener('click', event => {
   if (event.target === modalContainer) {
     resetModal();

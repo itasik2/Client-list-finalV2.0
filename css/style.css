@@ -240,13 +240,13 @@ th.sorted {
   font-size: 14px;
 }
 
-.clear-btn {
+.delete-input-btn {
   border: none;
   background-color: #e7e5eb;
 
 }
 
-.clear-btn>svg {
+.delete-input-btn>svg {
   fill: var(--txt-grey)
 }
 
