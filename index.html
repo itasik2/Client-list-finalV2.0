@@ -10,7 +10,18 @@
         <link href="./css/style.css" rel="stylesheet">
       </head>
       <body>
+
+        <header class="header">
+          <div class="header-container d-flex ">
+            <img class="logo" src="./img/header-logo.svg" alt="логотип">
+          <form class="form-search d-flex align-items-center" action="submit">
+            <input class="form-search__input h-100 p-2" id="search-input" type="search" name="search" placeholder="Введите запрос">
+          </form>
+          </div>
+        </header>
+
         <div class="container d-flex flex-column position-relative" id="container">
+          <h1 class="h1-title">Контакты</h1>
           <div class="modal-container position-absolute d-flex justify-content-center align-items-center d-none" id="modal-container">
             <div class="modal-wrap position-relative" id="modal-wrap">
               <div class="modal-header-container d-flex" id="modal-header">
@@ -26,15 +37,15 @@
 
                 <form class="form modal-form d-flex flex-column" id="add-client-form" action="submit">
                   <div class="form-item">
-                    <input class="form-input" id="surname" type="light-text" required>
+                    <input class="form-input" id="surname" type="th-title" required>
                     <label class="form-label" for="surname">Фамилия*</label>
                   </div>
                   <div class="form-item">
-                    <input class="form-input" id="name" type="light-text" required>
+                    <input class="form-input" id="name" type="th-title" required>
                     <label class="form-label" for="name">Имя*</label>
                   </div>
                   <div class="form-item">
-                    <input class="form-input" id="lastName" type="light-text" required>
+                    <input class="form-input" id="lastName" type="th-title" required>
                     <label class="form-label" for="lastName">Отчество</label>
                   </div>
                 </form>
@@ -55,7 +66,7 @@
                     Добавить контакт
                   </button>
                 </div>
-                <div class="errors-container" id="errors-container"></div>
+                <div class="errors-container d-flex" id="errors-container"></div>
                 <button class="save-client-btn modal-btn" id="save-client-btn" form="add-client-form">
                   Сохранить
                 </button>
@@ -68,28 +79,23 @@
             </div>
           </div>
 
-            <div class="header d-flex mb-4">
-              <img class="logo" src="./img/header-logo.svg" alt="логотип">
-              <form class="form-search d-flex align-items-center" action="submit">
-                <input class="form-search__input h-100 p-2" id="search-input" type="search" name="search" placeholder="Введите запрос">
-              </form>
-            </div>
+
             <div class="table-wrap" id="table wrap">
-              <h1 class="h1-title">Контакты</h1>
+
               <table class="table table-borderless" id="table">
                 <thead class="table-head" id="table-head">
-                  <th class="light-text" id="id" data-column="id">ID
+                  <th class="th-title light-text" id="id" data-column="id">ID
                     <span class="sort-icon asc"></span>
                   </th>
-                  <th class="light-text" id="fio" data-column="fio">
+                  <th class="th-title light-text" id="fio" data-column="fio">
                     Фамилия Имя Отчество
                     <span class="sort-icon asc"></span><span class="sort-order"></span>
                   </th>
-                  <th class="light-text" id="createdAt" data-column="createdAt">
+                  <th class="th-title light-text" id="createdAt" data-column="createdAt">
                     Дата и время<br>создания
                     <span class="sort-icon asc"></span>
                   </th>
-                  <th class="light-text" id="updatedAt" data-column="updatedAt">
+                  <th class="th-title light-text" id="updatedAt" data-column="updatedAt">
                     Последние<br>изменения
                     <span class="sort-icon asc"></span>
                   </th>

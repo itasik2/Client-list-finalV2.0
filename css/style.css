@@ -1,29 +1,51 @@
+@font-face {
+  font-family: 'Open-sans';
+  src: local('OpenSansRegular'), local('OpenSans-Regular'),
+    url('../fonts/OpenSans-Regular.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Open-sans';
+  src: local('OpenSansSemiBold'), local('OpenSans-SemiBold'),
+    url('../fonts/OpenSans-SemiBold.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Open-sans';
+  src: local('OpenSansBold'), local('OpenSans-Bold'),
+    url('../fonts/OpenSans-Bold.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+}
+
 :root {
   --white: #fff;
   --green: #34c759;
   --orange: #e6b127;
   --red: #f06a4d;
   --firm: #9873ff;
-  --ligth-grey: rgba(200, 197, 209, .3);
+  --transparent-grey: rgba(200, 197, 209, 0.302);
+  --ligth-grey: #E5E5E5;
   --grey: #c8c5d1;
   --txt-grey: #b0b0b0;
   --black: #333;
+
 }
 
 
 
-:root {
-  --font-family: "Open Sans", sans-serif;
-}
 
 body {
+  font-family: 'Open-sans', sans-serif;
   box-sizing: border-box;
   background-color: var(--grey);
-}
-
-th {
-  padding-right: 20px;
-  cursor: pointer;
 }
 
 :active,
@@ -45,24 +67,76 @@ th {
   color: var(--txt-grey);
 }
 
+.header {
+  /* position: absolute;
+  top: 0;
+  left: 0; */
+  width: 100%;
+  box-shadow: 0px 9.03012px 27.0904px rgba(176, 190, 197, 0.32), 0px 3.38629px 5.64383px rgba(176, 190, 197, 0.32);
+  background-color: var(--white);
+}
+
+.header-container {
+  margin: 0 auto;
+  padding-left: 15px;
+  padding-top: 10px;
+  padding-right: 15px;
+  padding-bottom: 12px;
+  max-width: 1024px;
+  align-items: center;
+}
+
+.logo {
+  margin-right: 33px;
+}
+
 .container {
-  margin: 50px auto;
+  margin: 0 auto;
   padding-left: 20px;
   padding-right: 20px;
-  background: var(--white);
+  background-color: var(--ligth-grey);
   max-width: 1024px;
 }
 
-
-
-.contacts {
-  background-color: var(--ligth-grey);
-  padding: 30px;
+.h1-title {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--black);
 }
 
-/* .contacts-container {
-  padding-bottom: 30px;
-} */
+th {
+  padding-right: 20px;
+  cursor: pointer;
+}
+
+
+th.sorted {
+  color: var(--firm);
+  /* Цвет для активной колонки */
+}
+
+.th-title {
+  &:hover {
+    color: var(--black);
+    transition: color .3s ease;
+  }
+
+}
+
+.table-body {
+  height: 300px;
+  background-color: var(--white);
+}
+
+.contacts {
+  background-color: var(--transparent-grey);
+  padding: 10px;
+}
+
+.contacts-container {
+  padding-top: 30px;
+}
 
 .contact-input {
   border: 1px solid var(--grey);
@@ -74,6 +148,14 @@ th {
   outline: none;
   border: none;
   background-color: transparent;
+}
+
+.errors-container {
+  font-size: 10px;
+  color: var(--red);
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .modal-container {
@@ -174,15 +256,6 @@ th {
 }
 
 
-.header {
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
-.logo {
-  margin-right: 50px;
-}
-
 .form-search__input {
   max-height: 44px;
   min-width: 581px;
@@ -190,10 +263,6 @@ th {
   background-color: inherit;
 }
 
-th.sorted {
-  color: var(--firm)
-    /* Цвет для активной колонки */
-}
 
 .sort-icon {
   display: inline-block;
@@ -217,16 +286,7 @@ th.sorted {
   background-image: url('../img/arrow-dawn.svg');
 }
 
-.table-body {
-  height: 300px;
-}
 
-.h1-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  color: var(--black);
-}
 
 .close-btn {
   border: none;
@@ -243,7 +303,7 @@ th.sorted {
 .delete-input-btn {
   border: none;
   background-color: #e7e5eb;
-
+  margin-left: auto;
 }
 
 .delete-input-btn>svg {
@@ -252,10 +312,29 @@ th.sorted {
 
 .editBtn,
 .deleteBtn {
+  position: relative;
   border: none;
   background-color: var(--white);
   font-weight: 400;
   font-size: 14px;
+}
+
+.editBtn:hover {
+  color: var(--firm);
+  transition: color .3s ease;
+}
+
+.activeEditBtn {
+  color: var(--firm);
+}
+
+.deleteBtn:hover {
+  color: var(--red);
+  transition: color .3s ease;
+}
+
+.activeDeleteBtn {
+  color: var(--red);
 }
 
 .add-btn {
@@ -300,7 +379,7 @@ th.sorted {
   display: none;
 }
 
-.hidden-contacts-btn.active {
+.hidden-contacts-btn:active {
   background-color: #0056b3;
 }
 
@@ -377,7 +456,24 @@ th.sorted {
   top: 50%;
   margin-left: -60px;
   margin-top: -60px;
+
 }
+
+.spin-edit-img {
+  width: 14px;
+  height: 14px;
+  animation: spin 2s linear infinite;
+
+}
+
+.spin-delete-img {
+  width: 14px;
+  height: 14px;
+  animation: spin 2s linear infinite;
+
+}
+
+
 
 @keyframes spin {
   0% {

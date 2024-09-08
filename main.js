@@ -527,8 +527,6 @@ function confirmDeleteClient(clientId) {
     render();
   });
 
-
-
   document.getElementById('cancelBtn').addEventListener('click', () => {
     cancelAction();
   });

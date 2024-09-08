@@ -41,7 +41,17 @@ async function serverRequest(endpoint, method, body = null) {
 
 // Функции для работы с клиентами
 async function serverAddClient(obj) {
-  return await serverRequest('', 'POST', obj);
+  saveBtn.disabled = true;
+  togglePreloader(true);
+  try {
+    const data = await serverRequest('', 'POST', obj);
+    return data;
+  } catch (error) {
+    console.error('Ошибка при удалении клиента:', error);
+  } finally {
+    togglePreloader(false);
+    saveBtn.disabled = false;
+  }
 }
 
 //функция получения списка клиентов
@@ -72,27 +82,22 @@ async function serverDeleteClient(id) {
 
 // Функция редактирования клиентов
 async function serverEditClient(id, obj) {
-  togglePreloader(true);
+
   try {
     const data = await serverRequest(id, 'PATCH', obj);
     return data;
   } catch (error) {
     console.error('Ошибка при редактировании клиента:', error);
-  } finally {
-    togglePreloader(false);
   }
 }
 
 // Функия получения клиента по ID
 async function serverGetClientById(clientId) {
-  togglePreloader(true);
   try {
     const data = await serverRequest(clientId, 'GET');
     return data;
   } catch (error) {
     console.error('Ошибка при получении клиента по ID:', error);
-  } finally {
-    togglePreloader(false);
   }
 }
 
@@ -131,7 +136,7 @@ function resetModal() {
 // Кнопка отмены
 const cancelBtn = getBtn('Отмена', 'cancel-btn', 'cancelBtn');
 
-// Функция коканинации имени, фамилии, отчества
+// Функция конкатинации имени, фамилии, отчества
 function getFio(surname, name, lastname) {
   return `${surname} ${name} ${lastname}`;
 }
@@ -167,6 +172,9 @@ function createContactIcon(contact) {
   };
   const imgSrc = contactIcons[contact.type] || 'img/contact-icon.svg';
   const img = getImage(imgSrc, contact.type, 'contact-icon');
+
+  if (contact.type === 'Телефон') contact.type = '';
+
   return `<span id="tippy-contact" data-tippy-content='<div class="tooltip-content">${contact.type}: <a href="" target="_blank">${contact.value}</a></div>'>${img.outerHTML}</span>`;
 }
 
@@ -216,7 +224,7 @@ function createContactInput(contact = {
       <option value="Facebook" ${contact.type === 'Facebook' ? 'selected' : ''}>Facebook</option>
       <option value="Другое" ${contact.type === 'Другое' ? 'selected' : ''}>Другое</option>
     </select>
-    <div class="value-input-wrapper d-flex">
+    <div class="value-input-wrapper d-flex w-100">
       <input type="text" class="contact-value" value="${contact.value}" placeholder="Введите значение">
       <button type="button" class="delete-input-btn d-none" data-tippy-content="Удалить">${getImage('./img/clear-icon.svg', '', 'clear-btn-icon').outerHTML}</button>
     </div>
@@ -230,6 +238,7 @@ function createContactInput(contact = {
     deleteInputBtn.classList.toggle('d-none', !valueInput.value.trim());
   });
 
+
   deleteInputBtn.addEventListener('click', () => {
     valueInput.value = '';
     deleteInputBtn.classList.add('d-none');
@@ -240,10 +249,17 @@ function createContactInput(contact = {
       addContactBtn.style.display = 'block';
     }
 
+    if (contactsContainer.children.length === 0) {
+      contactsContainer.classList.add('d-none')
+    }
+
     // Обновить начальное состояние формы после удаления контакта
     saveInitialFormState();
+
   });
 
+
+  // показывает кнопку удалить контакт если поле не пустое
   if (contact.value.trim()) {
     deleteInputBtn.classList.remove('d-none');
   }
@@ -261,35 +277,20 @@ function createContactInput(contact = {
 
 // Добалет форму заполнения контакта
 function addContact() {
-  if (contactsContainer.children.length >= 10) { // Если число контактов равно или больше 10, то кнопка добавить контакт исчезает
+  if (contactsContainer.children.length >= 9) { // Если число контактов равно или больше 10, то кнопка добавить контакт исчезает
     addContactBtn.style.display = 'none';
-    return;
   }
+
   contactsContainer.appendChild(createContactInput());
-  addContactBtn.style.display = 'block';
+
+  if (contactsContainer.children.length != 0) {
+    contactsContainer.classList.remove('d-none')
+  }
 }
 
 addContactBtn.addEventListener('click', addContact);
 
-// Валидация
-function validateClientForm() {
-  const errors = [];
-  const nameInput = document.getElementById('name');
-  const surnameInput = document.getElementById('surname');
-  const contactInputs = document.querySelectorAll('.contact-input');
 
-  if (!nameInput.value.trim()) errors.push('Имя не может быть пустым.');
-  if (!surnameInput.value.trim()) errors.push('Фамилия не может быть пустой.');
-
-  contactInputs.forEach((contactInput, index) => {
-    const contactValue = contactInput.querySelector('.contact-value').value.trim();
-    if (!contactValue) {
-      errors.push(`Значение контакта №${index + 1} не может быть пустым.`);
-    }
-  });
-
-  return errors;
-}
 
 // Функция заполнения формы данными клиента
 function fillForm(client) {
@@ -306,7 +307,13 @@ function fillForm(client) {
   contactsContainer.innerHTML = '';
   contacts.forEach(contact => contactsContainer.appendChild(createContactInput(contact)));
 
-  addContactBtn.style.display = contacts.length >= 10 ? 'none' : 'block';
+  addContactBtn.style.display = contacts.length >= 9 ? 'none' : 'block';
+
+  if (contactsContainer.children.length === 0) {
+    contactsContainer.classList.add('d-none');
+  } else {
+    contactsContainer.classList.remove('d-none');
+  }
 
   // Сохранение начального состояния формы
   initialFormState = getFormState();
@@ -355,9 +362,9 @@ addBtn.addEventListener('click', () => {
   buttonContainer.innerHTML = '';
   addClientForm.reset();
   contactsContainer.innerHTML = '';
+  contactsContainer.classList.add('d-none');
   errorsContainer.innerHTML = '';
   modalConfirmDelete.innerHTML = '';
-  addContact();
   saveInitialFormState(); // Сохранение начального состояния формы
   buttonContainer.appendChild(cancelBtn);
   addContactBtn.style.display = 'block';
@@ -366,6 +373,9 @@ addBtn.addEventListener('click', () => {
 
 // Закрытие модального окна
 closeBtn.addEventListener('click', resetModal);
+
+
+const errors = [];
 
 // добавляет или изменяет данные клиента
 async function addOrUpdateClient(event) {
@@ -391,7 +401,17 @@ async function addOrUpdateClient(event) {
     };
   });
 
-  const errors = validateClientForm();
+  // Валидация на стороне клиента
+
+  if (!name) errors.push('Имя не может быть пустым.');
+  if (!surname) errors.push('Фамилия не может быть пустой.');
+
+  contacts.forEach((contact, index) => {
+    if (!contact.value) {
+      errors.push(`Значение контакта №${index + 1} не может быть пустым.`);
+    }
+  });
+
   if (errors.length > 0) {
     errorsContainer.innerHTML = errors.join('<br>');
     return;
@@ -416,9 +436,47 @@ async function addOrUpdateClient(event) {
     render();
   } catch (error) {
     console.error('Ошибка при добавлении/редактировании клиента:', error);
-  }
 
+    // Обработка ошибок
+    if (error.response) {
+      const statusCode = error.response.status;
+
+      // Обработка конкретных статусов ошибок
+      switch (statusCode) {
+        case 404:
+          errors.push('Переданный в запросе метод не существует или запрашиваемый элемент не найден в базе данных');
+          break;
+
+        case 422:
+          // Если сервер вернул ошибки валидации
+          if (error.response.data && Array.isArray(error.response.data)) {
+            const validationErrors = error.response.data;
+            validationErrors.forEach(err => {
+              errors.push(`Объект, переданный в теле запроса, не прошёл валидацию: ${err.field}: ${err.message}`);
+            });
+          } else {
+            errors.push('Ошибка 422: Объект не прошёл валидацию.');
+          }
+          break;
+
+        case 500:
+          errors.push('Странно, но сервер сломался :(<br>Обратитесь к куратору Skillbox, чтобы решить проблему');
+          break;
+
+        default:
+          errors.push(`Ошибка: ${statusCode}: Что то пошло не так...`);
+      }
+    } else {
+      // Если нет ответа от сервера
+      errors.push('Ошибка соединения с сервером. Попробуйте позже.');
+    }
+
+    // Отображение ошибок пользователю
+    errorsContainer.innerHTML = errors.join('<br>');
+  }
 }
+
+
 
 // Сохранение клиента
 saveBtn.addEventListener('click', addOrUpdateClient);
@@ -447,6 +505,7 @@ function confirmDeleteClient(clientId) {
     clientsArr = await serverGetClients();
     render();
   });
+
 
   document.getElementById('cancelBtn').addEventListener('click', resetModal);
 }
@@ -517,6 +576,7 @@ function updateSortIcons() {
   });
 }
 
+
 // Фильтрация
 let debounceTimer;
 
@@ -540,6 +600,25 @@ searchInput.addEventListener('input', (event) => {
   }, 300); // Устанавливаем задержку в 300 мс
 });
 
+function showLoaderInButton(button, className = '', preloader) {
+  // Сохраняем оригинальное содержимое кнопки для возможности восстановления
+  button.setAttribute('data-original', button.innerHTML);
+  // Устанавливаем прелоадер как содержимое кнопки
+  button.innerHTML = preloader
+  if (className != '') {
+    button.classList.add(className);
+  }
+}
+
+function restoreButtonContent(button, className = '') {
+  // Восстанавливаем оригинальное содержимое кнопки
+  const originalContent = button.getAttribute('data-original');
+  if (originalContent) {
+    button.innerHTML = originalContent;
+    button.classList.remove(className);
+  }
+}
+
 
 // Функция отрисовки таблицы
 function render() {
@@ -557,14 +636,36 @@ function render() {
     `;
 
     const editBtn = getBtn(`${getImage('./img/edit.svg', 'Изменить', 'edit-img').outerHTML} Изменить`, 'editBtn', `edit-${client.id}`);
-    editBtn.addEventListener('click', () => openEditClientForm(client.id));
+
+    editBtn.addEventListener('click', async () => {
+      // Показывает спинер в кнопке
+      showLoaderInButton(editBtn, 'activeEditBtn', `${getImage('./img/spiner.svg', 'Изменить', 'spin-edit-img').outerHTML} Изменить`)
+
+      try {
+        await openEditClientForm(client.id);
+      } catch (error) {
+        errors.push('Ошибка при редактировании клиента:', error);
+      } finally {
+        restoreButtonContent(editBtn, 'activeEditBtn')
+      }
+    });
 
     const deleteBtn = getBtn(`${getImage('./img/delete-icon.svg', 'Удалить', 'delete-img').outerHTML} Удалить`, 'deleteBtn', `delete-${client.id}`);
-    deleteBtn.addEventListener('click', () => confirmDeleteClient(client.id));
+
+
+    deleteBtn.addEventListener('click', () => {
+      showLoaderInButton(deleteBtn, 'activeDeleteBtn', `${getImage('./img/delete-spiner.svg', 'Спинер', 'spin-delete-img').outerHTML} Удалить`);
+      confirmDeleteClient(client.id);
+      document.getElementById('confirm-delete-btn').addEventListener('click', () => restoreButtonContent(deleteBtn, 'activeDeleteBtn'));
+      closeBtn.addEventListener('click', () => restoreButtonContent(deleteBtn, 'activeDeleteBtn'));
+      document.getElementById('cancelBtn').addEventListener('click', () => restoreButtonContent(deleteBtn, 'activeDeleteBtn'));
+      modalContainer.addEventListener('click', () => restoreButtonContent(deleteBtn, 'activeDeleteBtn'));
+    });
+
 
     const btnTd = document.createElement('td');
-    btnTd.appendChild(editBtn);
-    btnTd.appendChild(deleteBtn);
+    btnTd.append(editBtn, deleteBtn);
+
     clientTR.appendChild(btnTd);
 
     clientsTable.appendChild(clientTR);
@@ -576,13 +677,16 @@ function render() {
   });
 
   updateSortIcons();
+
+  modalContainer.addEventListener('click', event => {
+    if (event.target === modalContainer) {
+      resetModal();
+    }
+  });
+
+
 }
 
 render();
 
-// Обработчик события на кнопку "Закрыть" для модального окна подтверждения удаления
-modalContainer.addEventListener('click', event => {
-  if (event.target === modalContainer) {
-    resetModal();
-  }
-});
+//

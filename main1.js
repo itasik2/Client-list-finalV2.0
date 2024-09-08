@@ -572,7 +572,7 @@ addBtn.addEventListener('click', () => {
   addBtn.dataset.editId = '';
   contactsContainer.innerHTML = ''; // Очистка полей контактов при добавлении нового клиента
   initialFormState = getFormState(); // Установка начального состояния формы
-  // saveBtn.disabled = true; // Деактивация кнопки сохранения
+  saveBtn.disabled = true; // Деактивация кнопки сохранения
 
   // Добавление кнопки "Отмена"
   buttonContainer.innerHTML = '';
