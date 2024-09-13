@@ -217,6 +217,10 @@ th.sorted {
   margin-bottom: 10px;
 }
 
+.input-error {
+  border-bottom: 1px solid var(--red);
+}
+
 .form-label {
   position: absolute;
   pointer-events: none;

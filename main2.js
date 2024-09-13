@@ -173,9 +173,24 @@ function createContactIcon(contact) {
   const imgSrc = contactIcons[contact.type] || 'img/contact-icon.svg';
   const img = getImage(imgSrc, contact.type, 'contact-icon');
 
-  if (contact.type === 'Телефон') contact.type = '';
 
-  return `<span id="tippy-contact" data-tippy-content='<div class="tooltip-content">${contact.type}: <a href="" target="_blank">${contact.value}</a></div>'>${img.outerHTML}</span>`;
+  let dataTippyContent = '',
+    contactLink = contact.value;
+  if (contact.type === 'Телефон') {
+    contactLink = `tel:${contact.value}`;
+  } else if (contact.type === 'Email') {
+    contactLink = `mailto:${contact.value}`;
+  } else if (contact.type === 'Vk' || contact.type === 'Facebook') {
+    contactLink = contact.value; // предполагается, что это URL
+  };
+
+  if (contact.type === 'Телефон') {
+    dataTippyContent = `data-tippy-content='<div class="tooltip-content">${contact.value}</div>'`
+  } else {
+    dataTippyContent = `data-tippy-content='<div class="tooltip-content">${contact.type}: <a href=""${contactLink}" target="_blank">${contact.value}</a></div>'`
+  }
+
+  return `<span id="tippy-contact" ${dataTippyContent}>${img.outerHTML}</span>`;
 }
 
 // Показывает скрытые контакты
@@ -232,6 +247,7 @@ function createContactInput(contact = {
 
   const valueInput = contactDiv.querySelector('.contact-value');
   const deleteInputBtn = contactDiv.querySelector('.delete-input-btn');
+  
 
   // показывает кнопку удалить контакт при заполнении значения
   valueInput.addEventListener('input', () => {
@@ -374,15 +390,20 @@ addBtn.addEventListener('click', () => {
 // Закрытие модального окна
 closeBtn.addEventListener('click', resetModal);
 
+// Массив валидации
 
-const errors = [];
 
 // добавляет или изменяет данные клиента
 async function addOrUpdateClient(event) {
   event.preventDefault();
+  const errors = [];
+  const onlyNumbers = /^\d+$/; // Проверка на цифры
+  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/; // Проверка email
+
+  errorsContainer.innerHTML = '';
 
   if (!isFormChanged()) {
-    console.log('Изменений в форме нет. Данные не отправлены.');
+    //console.log('Изменений в форме нет. Данные не отправлены.');
     resetModal();
     return;
   }
@@ -401,15 +422,70 @@ async function addOrUpdateClient(event) {
     };
   });
 
+  const phoneInputs = document.querySelectorAll('.contact-value');
+
+phoneInputs.forEach(input => {
+  if (input.closest('.contact-type').value === 'Телефон') {
+    Inputmask({
+      mask: "+7(999)999-99-99",
+    
+    }).mask(input);
+  }
+});
+
+
   // Валидация на стороне клиента
 
-  if (!name) errors.push('Имя не может быть пустым.');
-  if (!surname) errors.push('Фамилия не может быть пустой.');
+  if (!name) {
+    errors.push('Имя не может быть пустым.');
+    document.getElementById('name').classList.add('input-error');
+  } else {
+    document.getElementById('name').classList.remove('input-error');
+  };
+
+  if (!surname) {
+    errors.push('Фамилия не может быть пустой.');
+    document.getElementById('surname').classList.add('input-error');
+  } else {
+    document.getElementById('surname').classList.remove('input-error');
+  }
+
 
   contacts.forEach((contact, index) => {
-    if (!contact.value) {
-      errors.push(`Значение контакта №${index + 1} не может быть пустым.`);
-    }
+    const contactInput = document.querySelectorAll('.contact-input')[index];
+
+    // Если контакт телефон то проверяем на цифры и длинну
+    if (contact.type === 'Телефон') {
+      if (!contact.value) {
+        errors.push(`Значение контакта №${index + 1} не может быть пустым.`);
+        contactInput.classList.add('input-error');
+      } else if (!onlyNumbers.test(contact.value)) {
+        errors.push('Допустимы только цифры!');
+        contactInput.classList.add('input-error'); // подсвечиваем не валидное поле
+
+       } else if (contact.value.replace(/\D/g, '').length !== 11) {
+        errors.push('Номер должен состоять из 11 цифр!');
+        contactInput.classList.add('input-error');
+      } else {
+        contactInput.classList.remove('input-error'); // Убираем подсветку если поле валидное
+      }
+    };
+    // Проверка на емайл
+    if (contact.type === 'Email') {
+      if (!contact.value) {
+        errors.push(`Значение контакта №${index + 1} не может быть пустым.`);
+        contactInput.classList.add('input-error');
+
+      } else if (!emailPattern.test(contact.value)) {
+        errors.push('Непарвильный Email!');
+        contactInput.classList.add('input-error'); // подсвечиваем не валидное поле
+
+      } else {
+        contactInput.classList.remove('input-error'); // Убираем подсветку если поле валидное
+      }
+
+    };
+
   });
 
   if (errors.length > 0) {
@@ -475,8 +551,6 @@ async function addOrUpdateClient(event) {
     errorsContainer.innerHTML = errors.join('<br>');
   }
 }
-
-
 
 // Сохранение клиента
 saveBtn.addEventListener('click', addOrUpdateClient);
@@ -688,5 +762,3 @@ function render() {
 }
 
 render();
-
-//
