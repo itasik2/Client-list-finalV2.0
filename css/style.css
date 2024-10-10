@@ -1,25 +1,25 @@
 @font-face {
-  font-family: 'Open-sans';
-  src: local('OpenSansRegular'), local('OpenSans-Regular'),
-    url('../fonts/OpenSans-Regular.woff') format('woff');
+  font-family: "Open-sans";
+  src: local("OpenSansRegular"), local("OpenSans-Regular"),
+    url("../fonts/OpenSans-Regular.woff") format("woff");
   font-style: normal;
   font-display: swap;
   font-weight: 400;
 }
 
 @font-face {
-  font-family: 'Open-sans';
-  src: local('OpenSansSemiBold'), local('OpenSans-SemiBold'),
-    url('../fonts/OpenSans-SemiBold.woff') format('woff');
+  font-family: "Open-sans";
+  src: local("OpenSansSemiBold"), local("OpenSans-SemiBold"),
+    url("../fonts/OpenSans-SemiBold.woff") format("woff");
   font-style: normal;
   font-display: swap;
   font-weight: 600;
 }
 
 @font-face {
-  font-family: 'Open-sans';
-  src: local('OpenSansBold'), local('OpenSans-Bold'),
-    url('../fonts/OpenSans-Bold.woff') format('woff');
+  font-family: "Open-sans";
+  src: local("OpenSansBold"), local("OpenSans-Bold"),
+    url("../fonts/OpenSans-Bold.woff") format("woff");
   font-style: normal;
   font-display: swap;
   font-weight: 700;
@@ -32,18 +32,14 @@
   --red: #f06a4d;
   --firm: #9873ff;
   --transparent-grey: rgba(200, 197, 209, 0.302);
-  --ligth-grey: #E5E5E5;
+  --ligth-grey: #e5e5e5;
   --grey: #c8c5d1;
   --txt-grey: #b0b0b0;
   --black: #333;
-
 }
 
-
-
-
 body {
-  font-family: 'Open-sans', sans-serif;
+  font-family: "Open-sans", sans-serif;
   box-sizing: border-box;
   background-color: var(--grey);
 }
@@ -53,6 +49,22 @@ body {
 :focus {
   outline: 0;
   outline-offset: 0;
+}
+
+/* Модальное окно по умолчанию скрыто (прозрачное и невидимое) */
+.hidde {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-50px); /* Смещено вверх */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+/* Когда модальное окно активно (отображается) */
+.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0); /* Возвращается на место */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
 }
 
 .text {
@@ -72,44 +84,51 @@ body {
   top: 0;
   left: 0; */
   width: 100%;
-  box-shadow: 0px 9.03012px 27.0904px rgba(176, 190, 197, 0.32), 0px 3.38629px 5.64383px rgba(176, 190, 197, 0.32);
+  box-shadow: 0px 9.03012px 27.0904px rgba(176, 190, 197, 0.32),
+    0px 3.38629px 5.64383px rgba(176, 190, 197, 0.32);
   background-color: var(--white);
 }
 
 .header-container {
   margin: 0 auto;
-  padding-left: 15px;
-  padding-top: 10px;
+  padding-left: 20px;
+  padding-top: 20px;
   padding-right: 15px;
-  padding-bottom: 12px;
+  padding-bottom: 23px;
   max-width: 1024px;
   align-items: center;
 }
 
 .logo {
-  margin-right: 33px;
+  margin-right: 55px;
 }
 
 .container {
   margin: 0 auto;
+  padding-top: 40px;
   padding-left: 20px;
   padding-right: 20px;
   background-color: var(--ligth-grey);
   max-width: 1024px;
 }
 
+.table-head {
+  border: none;
+}
+
 .h1-title {
+  margin: 0;
+  margin-bottom: 5px;
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 24px;
+  font-size: 22px;
   color: var(--black);
 }
 
 th {
   padding-right: 20px;
-  cursor: pointer;
+  border: none;
 }
-
 
 th.sorted {
   color: var(--firm);
@@ -117,16 +136,28 @@ th.sorted {
 }
 
 .th-title {
+  cursor: pointer;
   &:hover {
     color: var(--black);
-    transition: color .3s ease;
+    transition: color 0.3s ease;
   }
+}
 
+tr {
+  height: 20px;
 }
 
 .table-body {
   height: 300px;
   background-color: var(--white);
+}
+
+td {
+  align-content: center;
+}
+
+.client-fio {
+  max-width: 250px;
 }
 
 .contacts {
@@ -159,9 +190,12 @@ th.sorted {
 }
 
 .modal-container {
+  top: 0;
   left: 0;
+  padding-top: 30px;
+  padding-bottom: 30px;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   background-color: rgba(51, 51, 51, 0.6);
   z-index: 99999;
 }
@@ -171,18 +205,14 @@ th.sorted {
   box-shadow: 0 0 35px 0 rgba(0, 0, 0, 0.15);
   background: var(--white);
   z-index: 99999;
-  /* height: max-content; */
-  max-height: 100vh;
   padding-top: 30px;
   padding-bottom: 30px;
-  overflow: auto;
 }
 
 .modal-header-container {
   padding-left: 30px;
   padding-right: 30px;
 }
-
 
 .modal-confirm-delete-desc {
   margin: auto;
@@ -230,14 +260,13 @@ th.sorted {
   white-space: nowrap;
   overflow: hidden;
   line-height: 40px;
-  transition: .3s;
+  transition: 0.3s;
   color: var(--txt-grey);
 }
 
-
-.form-input:focus~.form-label,
-.form-input:not(:focus):valid~.form-label,
-.form-input:focus:invalid~.form-label {
+.form-input:focus ~ .form-label,
+.form-input:not(:focus):valid ~ .form-label,
+.form-input:focus:invalid ~ .form-label {
   top: -15px;
   font-size: 10px;
 }
@@ -255,10 +284,9 @@ th.sorted {
   background-image: url(../img/select-arrow-up.svg);
 }
 
-.form-select>option {
+.form-select > option {
   background-color: #fff;
 }
-
 
 .form-search__input {
   max-height: 44px;
@@ -267,14 +295,12 @@ th.sorted {
   background-color: inherit;
 }
 
-
 .sort-icon {
   display: inline-block;
   width: 10px;
   height: 10px;
   margin-left: 5px;
   background-size: contain;
-
 }
 
 .sort-order {
@@ -283,14 +309,12 @@ th.sorted {
 }
 
 .sort-icon.asc {
-  background-image: url('../img/arrow-up.svg');
+  background-image: url("../img/arrow-up.svg");
 }
 
 .sort-icon.desc {
-  background-image: url('../img/arrow-dawn.svg');
+  background-image: url("../img/arrow-dawn.svg");
 }
-
-
 
 .close-btn {
   border: none;
@@ -310,8 +334,8 @@ th.sorted {
   margin-left: auto;
 }
 
-.delete-input-btn>svg {
-  fill: var(--txt-grey)
+.delete-input-btn > svg {
+  fill: var(--txt-grey);
 }
 
 .editBtn,
@@ -325,7 +349,7 @@ th.sorted {
 
 .editBtn:hover {
   color: var(--firm);
-  transition: color .3s ease;
+  transition: color 0.3s ease;
 }
 
 .activeEditBtn {
@@ -334,7 +358,7 @@ th.sorted {
 
 .deleteBtn:hover {
   color: var(--red);
-  transition: color .3s ease;
+  transition: color 0.3s ease;
 }
 
 .activeDeleteBtn {
@@ -350,7 +374,6 @@ th.sorted {
   border: 1px solid var(--firm);
   border-radius: 0px;
   padding: 12px 26px;
-
 }
 
 .cancel-btn,
@@ -361,7 +384,10 @@ th.sorted {
   font-size: 12px;
   text-decoration: underline;
   text-decoration-skip-ink: none;
+}
 
+.visible-contacts {
+  padding-bottom: 2px;
 }
 
 .hidden-contacts-btn {
@@ -374,20 +400,13 @@ th.sorted {
   justify-content: center;
   width: 16px;
   height: 16px;
-  font-size: 10px;
+  font-size: 9px;
   cursor: pointer;
-  margin-left: 5px;
-}
-
-.hidden-contacts {
-  display: none;
 }
 
 .hidden-contacts-btn:active {
-  background-color: #0056b3;
+  background-color: #b89eff;
 }
-
-
 
 .modal-btn {
   display: flex;
@@ -405,14 +424,13 @@ th.sorted {
   align-items: center;
 }
 
-
-
 .contact-icon {
   cursor: pointer;
   width: 16px;
   height: 16px;
-  fill: #9873FF;
+  fill: #9873ff;
   opacity: 0.7;
+  margin-right: 3px;
 }
 
 .tippy-box {
@@ -425,7 +443,6 @@ th.sorted {
   font-weight: 400;
   font-size: 12px;
   color: #fff;
-
 }
 
 .tooltip-content a {
@@ -433,9 +450,7 @@ th.sorted {
   text-decoration: underline;
   text-decoration-skip-ink: none;
   color: #b89eff;
-
 }
-
 
 #preloader {
   position: absolute;
@@ -460,24 +475,19 @@ th.sorted {
   top: 50%;
   margin-left: -60px;
   margin-top: -60px;
-
 }
 
 .spin-edit-img {
   width: 14px;
   height: 14px;
   animation: spin 2s linear infinite;
-
 }
 
 .spin-delete-img {
   width: 14px;
   height: 14px;
   animation: spin 2s linear infinite;
-
 }
-
-
 
 @keyframes spin {
   0% {
