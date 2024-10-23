@@ -1,3 +1,4 @@
+/* fonts */
 @font-face {
   font-family: "Open-sans";
   src: local("OpenSansRegular"), local("OpenSans-Regular"),
@@ -25,6 +26,7 @@
   font-weight: 700;
 }
 
+/* Var */
 :root {
   --white: #fff;
   --green: #34c759;
@@ -42,6 +44,7 @@ body {
   font-family: "Open-sans", sans-serif;
   box-sizing: border-box;
   background-color: var(--grey);
+  position: relative;
 }
 
 :active,
@@ -49,22 +52,6 @@ body {
 :focus {
   outline: 0;
   outline-offset: 0;
-}
-
-/* Модальное окно по умолчанию скрыто (прозрачное и невидимое) */
-.hidde {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-50px); /* Смещено вверх */
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-}
-
-/* Когда модальное окно активно (отображается) */
-.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0); /* Возвращается на место */
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
 }
 
 .text {
@@ -79,114 +66,21 @@ body {
   color: var(--txt-grey);
 }
 
-.header {
-  /* position: absolute;
-  top: 0;
-  left: 0; */
-  width: 100%;
-  box-shadow: 0px 9.03012px 27.0904px rgba(176, 190, 197, 0.32),
-    0px 3.38629px 5.64383px rgba(176, 190, 197, 0.32);
-  background-color: var(--white);
+/* Modal */
+/* Модальное окно по умолчанию скрыто (прозрачное и невидимое) */
+.hidde {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-50px); /* Смещено вверх */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
 }
 
-.header-container {
-  margin: 0 auto;
-  padding-left: 20px;
-  padding-top: 20px;
-  padding-right: 15px;
-  padding-bottom: 23px;
-  max-width: 1024px;
-  align-items: center;
-}
-
-.logo {
-  margin-right: 55px;
-}
-
-.container {
-  margin: 0 auto;
-  padding-top: 40px;
-  padding-left: 20px;
-  padding-right: 20px;
-  background-color: var(--ligth-grey);
-  max-width: 1024px;
-}
-
-.table-head {
-  border: none;
-}
-
-.h1-title {
-  margin: 0;
-  margin-bottom: 5px;
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 22px;
-  color: var(--black);
-}
-
-th {
-  padding-right: 20px;
-  border: none;
-}
-
-th.sorted {
-  color: var(--firm);
-  /* Цвет для активной колонки */
-}
-
-.th-title {
-  cursor: pointer;
-  &:hover {
-    color: var(--black);
-    transition: color 0.3s ease;
-  }
-}
-
-tr {
-  height: 20px;
-}
-
-.table-body {
-  height: 300px;
-  background-color: var(--white);
-}
-
-td {
-  align-content: center;
-}
-
-.client-fio {
-  max-width: 250px;
-}
-
-.contacts {
-  background-color: var(--transparent-grey);
-  padding: 10px;
-}
-
-.contacts-container {
-  padding-top: 30px;
-}
-
-.contact-input {
-  border: 1px solid var(--grey);
-  border-radius: 0;
-  margin-bottom: 20px;
-}
-
-.contact-value {
-  outline: none;
-  border: none;
-  background-color: transparent;
-}
-
-.errors-container {
-  font-size: 10px;
-  color: var(--red);
-  justify-content: center;
-  text-align: center;
-  margin-bottom: 20px;
+/* Когда модальное окно активно (отображается) */
+.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0); /* Возвращается на место */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
 }
 
 .modal-container {
@@ -214,18 +108,16 @@ td {
   padding-right: 30px;
 }
 
-.modal-confirm-delete-desc {
-  margin: auto;
-  text-align: center;
+.close-btn {
+  border: none;
+  background-color: var(--white);
+  right: 10px;
+  top: 10px;
 }
 
 .modal-title {
   font-weight: 700;
   font-size: 18px;
-}
-
-.delete-title {
-  margin: 0 auto;
 }
 
 .modal-form {
@@ -271,21 +163,124 @@ td {
   font-size: 10px;
 }
 
-.form-select {
-  border: none;
+.contacts {
+  background-color: var(--transparent-grey);
+  padding: 10px 30px;
+}
+
+.contacts-container {
+  padding-top: 30px;
+}
+
+.contact-input {
+  border: 1px solid var(--grey);
   border-radius: 0;
-  max-width: 123px;
-  height: 37px;
+  margin-bottom: 20px;
+}
+
+.delete-input-btn {
+  border: none;
   background-color: #e7e5eb;
-  background-image: url(../img/select-arrow-down.svg);
+  margin-left: auto;
 }
 
-.form-select:active {
-  background-image: url(../img/select-arrow-up.svg);
+.delete-input-btn > svg {
+  fill: var(--txt-grey);
 }
 
-.form-select > option {
-  background-color: #fff;
+.contact-value {
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+.contact-type > option {
+  background-color: var(--white);
+  border: 0;
+  border-radius: 0;
+  color: var(--black);
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.contact-type {
+  width: 123px;
+  height: 37px;
+  border: none;
+  color: var(--black);
+  font-size: 12px;
+  appearance: none; /* Для большинства браузеров */
+  -webkit-appearance: none; /* Для Safari и Chrome */
+  -moz-appearance: none;
+  padding-left: 10px;
+  background-color: #e7e5eb;
+}
+
+.select-wrapper::after {
+  content: url(../img/select-arrow-down.svg); /* Иконка стрелки вниз */
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Чтобы стрелка не мешала клику по селекту */
+  transition: transform 0.3s ease; /* Плавный переход */
+}
+
+.select-wrapper:active::after {
+  transform: translateY(-50%) rotate(180deg); /* Поворот стрелки на 180 градусов при раскрытии */
+}
+
+.errors-container {
+  font-size: 10px;
+  color: var(--red);
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.add-contact-btn {
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  &:active,
+  &:hover,
+  &:focus-visible {
+    color: var(--firm);
+  }
+}
+
+/* Delete modal */
+.modal-confirm-delete-desc {
+  margin: auto;
+  text-align: center;
+}
+
+.delete-title {
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  width: 100%;
+  box-shadow: 0px 9.03012px 27.0904px rgba(176, 190, 197, 0.32),
+    0px 3.38629px 5.64383px rgba(176, 190, 197, 0.32);
+  background-color: var(--white);
+}
+
+.header-container {
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-right: 15px;
+  padding-bottom: 23px;
+  max-width: 1024px;
+  align-items: center;
+}
+
+.logo {
+  margin-right: 55px;
 }
 
 .form-search__input {
@@ -295,11 +290,44 @@ td {
   background-color: inherit;
 }
 
+/* Container */
+.container {
+  margin: 0 auto;
+  padding-top: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: var(--ligth-grey);
+  max-width: 1024px;
+}
+
+.h1-title {
+  margin: 0;
+  margin-bottom: 5px;
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--black);
+}
+
+/* Table */
+.table > :not(caption) > * > * {
+  padding: 5px 5px;
+}
+
+th {
+  padding-right: 20px;
+  border: none;
+}
+
+th.sorted {
+  color: var(--firm);
+  /* Цвет для активной колонки */
+}
+
 .sort-icon {
   display: inline-block;
   width: 10px;
   height: 10px;
-  margin-left: 5px;
   background-size: contain;
 }
 
@@ -316,26 +344,29 @@ td {
   background-image: url("../img/arrow-dawn.svg");
 }
 
-.close-btn {
-  border: none;
+.th-title {
+  cursor: pointer;
+  &:hover {
+    color: var(--firm);
+    transition: color 0.3s ease;
+  }
+}
+
+tr {
+  height: 20px;
+}
+
+.table-body {
+  height: 300px;
   background-color: var(--white);
-  right: 20px;
 }
 
-.add-contact-btn {
-  border: none;
-  font-weight: 600;
-  font-size: 14px;
+td {
+  align-content: center;
 }
 
-.delete-input-btn {
-  border: none;
-  background-color: #e7e5eb;
-  margin-left: auto;
-}
-
-.delete-input-btn > svg {
-  fill: var(--txt-grey);
+.client-fio {
+  max-width: 250px;
 }
 
 .editBtn,
@@ -412,7 +443,8 @@ td {
   display: flex;
   align-items: center;
   margin: 0 auto;
-  padding: 17px 35px;
+  font-size: 14px;
+  padding: 12px 37px;
   max-width: max-content;
   background-color: var(--firm);
   color: var(--white);
@@ -428,9 +460,15 @@ td {
   cursor: pointer;
   width: 16px;
   height: 16px;
-  fill: #9873ff;
+  fill: var(--firm);
   opacity: 0.7;
   margin-right: 3px;
+    &:hover,
+    &:active {
+      opacity: 1;
+      transition: opacity .3s ease;
+    }
+
 }
 
 .tippy-box {
@@ -496,5 +534,76 @@ td {
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* Медиазапрос для экранов меньше 768px */
+@media (max-width: 768px) {
+  .header-container {
+    justify-content: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .logo {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+  }
+
+  .form-search__input {
+    display: none;
+  }
+
+  .h1-title {
+    font-size: 18px;
+  }
+
+  .table-wrap {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    width: 755px;
+  }
+
+  .modal-wrap {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    max-width: 300px;
+  }
+
+  .modal-header-container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .close-btn {
+    right: 5px;
+    top: 5px;
+  }
+
+  .modal-form {
+    padding: 15px;
+  }
+
+  .contacts {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .contacts-container {
+    padding-top: 15px;
+  }
+
+  .contact-type {
+    width: 110px;
+    font-size: 12px;
+  }
+
+  .contact-value {
+    width: 143px;
   }
 }
